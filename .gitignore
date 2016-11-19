@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Data and models files
+*.csv
+*.bins
+*.pkl
+*.npy
