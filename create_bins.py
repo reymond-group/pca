@@ -44,8 +44,7 @@ PARSER.add_argument('-pf', '--propertiesfunc', choices=['mean', 'median'], defau
 
 ARGS = PARSER.parse_args()
 
-if not ARGS.output.endswith('.bins'):
-    ARGS.output = os.path.splitext(ARGS.output)[0] + '.bins'
+ARGS.output = os.path.splitext(ARGS.output)[0]
 
 def load_properties(filename, lines):
     properties = ''
@@ -93,33 +92,46 @@ for chunk in READER:
         index += 1
 
 if not ARGS.properties:
-    with open(ARGS.output, 'a+') as f:
-        for key, value in bins.items():
-            if len(value) < 1:
-                continue
-            f.write(str(key[0]) + ',' + str(key[1]) + ',' + str(key[2]) + ',')
-            values = ''
-            for item in value:
-                values += str(item) + ';'
-            f.write(values[:-1] + '\n')
+    with open(ARGS.output + '.xyz', 'a+') as f:
+        with open(ARGS.output + '.dat', 'a+') as g:
+            for key, value in bins.items():
+                if len(value) < 1:
+                    continue
+                f.write(str(key[0]) + ',' + str(key[1]) + ',' + str(key[2]) + '\n')
+                values = ''
+                for item in value:
+                    values += str(item) + ','
+                g.write(values[:-1] + '\n')
 else:
-    with open(ARGS.output, 'a+') as f:
-        for key, value in bins.items():
-            if len(value) < 1:
-                continue
-            f.write(str(key[0]) + ',' + str(key[1]) + ',' + str(key[2]) + ',')
-            properties = load_properties(ARGS.properties, value)
-            props = pd.read_csv(StringIO(properties), sep=ARGS.propertiesdelimiter, header=None)
-            binprops = None
-            if ARGS.propertiesfunc == 'mean':
-                binprops = props.mean(axis=0)
-            elif ARGS.propertiesfunc == 'median':
-                binprops = props.medium(axis=0)
+    with open(ARGS.output + '.xyz', 'a+') as f:
+        with open(ARGS.output + '.dat', 'a+') as g:
+            with open(ARGS.output + '.means', 'a+') as h:
+                with open(ARGS.output + '.stds', 'a+') as k:
+                    for key, value in bins.items():
+                        if len(value) < 1:
+                            continue
+                        f.write(str(key[0]) + ',' + str(key[1]) + ',' + str(key[2]) + '\n')
+                        properties = load_properties(ARGS.properties, value)
+                        props = pd.read_csv(StringIO(properties), sep=ARGS.propertiesdelimiter, header=None)
+                        means = None
+                        if ARGS.propertiesfunc == 'mean':
+                            means = props.mean(axis=0)
+                        elif ARGS.propertiesfunc == 'median':
+                            means = props.medium(axis=0)
 
-            for p in binprops:
-                f.write(str(p) + ',')
-            
-            values = ''
-            for item in value:
-                values += str(item) + ';'
-            f.write(values[:-1] + '\n')
+                        stds = props.std(axis=0)
+
+                        values = ''
+                        for p in means:
+                            values += str(p) + ','
+                        h.write(values[:-1] + '\n')
+
+                        values = ''
+                        for p in stds:
+                            values += str(p) + ','
+                        k.write(values[:-1] + '\n')
+
+                        values = ''
+                        for item in value:
+                            values += str(item) + ','
+                        g.write(values[:-1] + '\n')
