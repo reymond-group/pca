@@ -40,12 +40,13 @@ STDS = pd.read_csv(ARGS.stds, sep=ARGS.delimiter, usecols=[ARGS.index], header=N
 STDS = STDS.fillna(0)
 STDS = STDS.rename(columns = {0:1})
 
-MEANS = MEANS.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))).values
+MEANS = MEANS.apply(lambda x: (0.456 * (x - np.min(x)) / (np.max(x) - np.min(x))) + 0.66).values
 STDS = STDS.apply(lambda x: 1 - (0.5 * (x - np.min(x))) / (np.max(x) - np.min(x))).values
 
 #DATA = pd.concat([DATA, STDS], axis=1)
 
 with open(ARGS.output + '.map', 'a+') as f:
     for i, row in enumerate(MEANS):
+        if row[0] > 1.0: row[0] = row[0] - 1.0;
         c = Color(hue=row[0], saturation=STDS[i][0], luminance=0.5)
         f.write(str(round(c.red, 2)) + ',' + str(round(c.green, 2)) + ',' + str(round(c.blue, 2)) + '\n')
