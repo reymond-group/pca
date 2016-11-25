@@ -47,8 +47,8 @@ STDS = STDS.apply(lambda x: 1 - (0.5 * (x - np.min(x))) / (np.max(x) - np.min(x)
 
 with open(ARGS.output + '.map', 'a+') as f:
     for i, row in enumerate(MEANS):
-        if row[0] > 1.0: row[0] = row[0] - 1.0;
+        if row[0] > 1.0: row[0] = row[0] - 1.0
         row[0] = (1 - row[0]) + 0.33
-        if row[0] > 1.0: row[0] = row[0] - 1.0;
+        if row[0] > 1.0: row[0] = row[0] - 1.0
         c = Color(hue=row[0], saturation=STDS[i][0], luminance=0.5)
         f.write(str(round(c.red, 2)) + ',' + str(round(c.green, 2)) + ',' + str(round(c.blue, 2)) + '\n')
