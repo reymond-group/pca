@@ -8,7 +8,7 @@ PARSER.add_argument('input', metavar='INPUT', type=str,
                     help='the input (csv) file')
 
 PARSER.add_argument('output', metavar='OUTPUT', type=str,
-                    help='the output (csv) file')
+                    help='the padded output file')
 
 
 ARGS = PARSER.parse_args()

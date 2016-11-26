@@ -22,7 +22,7 @@ PARSER.add_argument('dimensions', metavar='DIMENSION', type=int, nargs='*', defa
                     help='the fields specifying the dimensions used to bin the data, ' +
                     'the default value is 0 1 2')
 
-PARSER.add_argument('bins', metavar='BINS', type=int, nargs='*', default=[500, 500, 500],
+PARSER.add_argument('bins', metavar='BINS', type=int, nargs='*', default=[250, 250, 250],
                     help='the fields specifying the number of bins used to bin the data, ' +
                     'the default value is 1000 1000 1000')
 
@@ -112,7 +112,7 @@ else:
                             continue
                         f.write(str(key[0]) + ',' + str(key[1]) + ',' + str(key[2]) + '\n')
                         properties = load_properties(ARGS.properties, value)
-                        props = pd.read_csv(StringIO(properties), sep=ARGS.propertiesdelimiter, header=None)
+                        props = pd.read_csv(StringIO(unicode(properties)), sep=ARGS.propertiesdelimiter, header=None)
                         means = None
                         if ARGS.propertiesfunc == 'mean':
                             means = props.mean(axis=0)
