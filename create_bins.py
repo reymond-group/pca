@@ -112,7 +112,7 @@ else:
                             continue
                         f.write(str(key[0]) + ',' + str(key[1]) + ',' + str(key[2]) + '\n')
                         properties = load_properties(ARGS.properties, value)
-                        props = pd.read_csv(StringIO(unicode(properties)), sep=ARGS.propertiesdelimiter, header=None)
+                        props = pd.read_csv(StringIO(str(properties)), sep=ARGS.propertiesdelimiter, header=None)
                         means = None
                         if ARGS.propertiesfunc == 'mean':
                             means = props.mean(axis=0)
