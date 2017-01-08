@@ -16,6 +16,6 @@ with open(ARGS.input, 'r') as f:
     with open(ARGS.input + '.index', 'a+') as g:
         for line in f:
             length = len(line)
-            g.write(str(start) + ',' + str(start + length) + '\n')
+            g.write(str(start) + ',' + str(length) + '\n')
             start += length
 
