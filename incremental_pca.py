@@ -35,7 +35,7 @@ ARGS = PARSER.parse_args()
 
 ARGS.output = os.path.splitext(ARGS.output)[0]
 
-READER = pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None)
+READER = pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None, error_bad_lines=False)
 
 PCA = IncrementalPCA(n_components=ARGS.dimensions)
 
@@ -58,7 +58,7 @@ np.savetxt(ARGS.output + '-means.csv', PCA.mean_, delimiter=',')
 np.savetxt(ARGS.output + '-vars.csv', PCA.var_, delimiter=',')
 
 with open(ARGS.output + '.csv', 'a+') as f:
-    for chunk in pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None):
+    for chunk in pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None, error_bad_lines=False):
         transformed_chunk = PCA.transform(chunk)
         pd.DataFrame(transformed_chunk).to_csv(f, header=None, index=False)
         total_written += ARGS.chunksize

@@ -31,6 +31,12 @@ PARSER.add_argument('-d', '--delimiter', type=str, default=',',
 PARSER.add_argument('-i', '--index', type=int, required=True,
                     help='the index for the column to be exported as an RGB color map')
 
+PARSER.add_argument('--min', nargs='?', const=0.0, type=float,
+                    help='the min value')
+
+PARSER.add_argument('--max', nargs='?', const=1.0, type=float,
+                    help='the max value')
+
 ARGS = PARSER.parse_args()
 
 ARGS.output = os.path.splitext(ARGS.output)[0]
@@ -39,6 +45,12 @@ MEANS = pd.read_csv(ARGS.means, sep=ARGS.delimiter, usecols=[ARGS.index], header
 STDS = pd.read_csv(ARGS.stds, sep=ARGS.delimiter, usecols=[ARGS.index], header=None)
 STDS = STDS.fillna(0)
 STDS = STDS.rename(columns = {0:1})
+
+if ARGS.min is not None:
+    MEANS[MEANS < ARGS.min] = ARGS.min
+
+if ARGS.max is not None:
+    MEANS[MEANS > ARGS.max] = ARGS.max
 
 MEANS = MEANS.apply(lambda x: (0.85 * (x - np.min(x)) / (np.max(x) - np.min(x))) + 0.66).values
 STDS = STDS.apply(lambda x: 1 - (0.5 * (x - np.min(x))) / (np.max(x) - np.min(x))).values
