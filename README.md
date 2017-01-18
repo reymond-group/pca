@@ -13,7 +13,7 @@ cut -f<columnindex> -d' ' output.smi > output.prop
 
 If there are trailing semicolons, remove the last character from each line 
 ```
-sed 's/.$//'
+sed 's/.$// <file>'
 ```
 
 ### PCA
