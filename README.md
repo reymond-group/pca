@@ -1,4 +1,6 @@
 # pca
+### File Integrity Check
+The file can be checked on whether or not it is an ASCII file using the `checkascii.sh` script. Checks on the readability of the file can be run using the `check_file.py` script.
 
 ### Preparation
 If the files do not contain matching compounds (some might fail during fingerprint calculation), the differing files have to be removed in order to guarantee that the ids and smiles indices point to the correct value for each fingerprint. This is due to the fact, that smiles and ids are used per database and not per fingerprint (resulting in less memory usage).
