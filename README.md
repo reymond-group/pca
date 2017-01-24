@@ -1,4 +1,5 @@
-# pca
+# The PCPBIM (Preparation - Cleanup - PCA - Binning - Info - Mapping) Toolchain
+
 ### File Integrity Check
 The file can be checked on whether or not it is an ASCII file using the `checkascii.sh` script. Checks on the readability of the file can be run using the `check_file.py` script.
 
