@@ -10,12 +10,14 @@ PARSER.add_argument('input', metavar='INPUT', type=str,
 
 ARGS = PARSER.parse_args()
 
-start = 0
+def run():
+    """ Generate the index for the given file """
+    start = 0
+    with open(ARGS.input, 'r') as in_file:
+        with open(ARGS.input + '.index', 'a+') as out_file:
+            for line in in_file:
+                length = len(line)
+                out_file.write(str(start) + ',' + str(length) + '\n')
+                start += length
 
-with open(ARGS.input, 'r') as f:
-    with open(ARGS.input + '.index', 'a+') as g:
-        for line in f:
-            length = len(line)
-            g.write(str(start) + ',' + str(length) + '\n')
-            start += length
-
+run()

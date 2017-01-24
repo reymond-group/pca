@@ -1,5 +1,37 @@
 # pca
 
+### Preparation
+If the files do not contain matching compounds (some might fail during fingerprint calculation), the differing files have to be removed in order to guarantee that the ids and smiles indices point to the correct value for each fingerprint. This is due to the fact, that smiles and ids are used per database and not per fingerprint (resulting in less memory usage).
+
+First, extract the ids from the .smi files:
+```
+cut -f<columnindex> -d' ' output.smi > output.info
+cut -f<columnindex> -d';' output.info > output.ids
+```
+Next, sort the ids:
+```
+sort output.ids -o output.ids
+```
+Finally, use the `comm` command to extract the shared lines among the files a, b, c, d by:
+```
+comm -12 a.ids b.ids | comm -12 - c.ids | comm -12 - d.ids > commond.ids
+```
+To join the files again, first, sort one of the `.info` files by the id:
+```
+sort --field-separator=';' --key=2 output.info -o output.info
+join -1 2 -2 1 output.info commont.ids -t $';' > common.info
+```
+Reorder the columns and sort the file
+```
+awk -F";" '{print $2 ";" $1}' common.info > tmp && mv tmp common.info
+sort common.info -o common.info
+```
+Then sort the file `output.smi` and join it with `common.info`
+```
+sort output.smi -o output.smi
+join -1 1 -2 1 common.info output.smi -t $' ' > output.smi.fixed
+```
+
 ### Joining .smi files (if there are multiple)
 ```
 cat smifile* > output.smi
