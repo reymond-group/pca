@@ -9,24 +9,40 @@
             pre {
                 margin: 5px;
                 padding: 5px;
-                background-color: #EEEEEE;
+                background-color: #F6E9D5;
+            }
+
+            pre#response-text {
+                display: none;
             }
 
             h1 {
                 color: #2980b9;
             }
+            
+            textarea {
+                width: 100%;
+                height: 200px;
+                border: 1px solid #CCCCCC;
+            }
+
+            button {
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
         </style>
     </head>
     <body>
         <h1>Incremental PCA Service</h1>
+        <h2>Usage</h2>
         <p>In order to receive data from this service, pleace send a POST request to this URL.</p>
         <p>Example:</p>
         <pre>
 {
-    database: 'surechembl',
-    fingerprint: 'mqn',
-    dimensions: 3,
-    data: [
+    "database": "surechembl",
+    "fingerprint": "mqn",
+    "dimensions": 3,
+    "data": [
         [2,2,4,5,3,0,0,0,2,0,0,0,0,19,14,0,0,0,0,0,0,1,1,0,3,5,2,1,1,6,4,0,2,0,0,6,5,0,8,1,0,1],
         [0,0,3,4,11,0,0,0,1,0,0,0,0,22,16,1,0,0,0,0,0,0,1,0,4,5,7,4,0,5,1,0,0,0,0,3,3,0,15,1,0,0],
         ...
@@ -35,11 +51,11 @@
         <p>If successful, the service returns data in the form of:</p>
         <pre>
 {
-    success: true,
-    database: 'surechembl',
-    fingerprint: 'mqn',
-    dimensions: 3,
-    data: [
+    "success": true,
+    "database": "surechembl",
+    "fingerprint": "mqn",
+    "dimensions": 3,
+    "data": [
         [153.12, -23.35653, 27.12],
         [282.162, 35.47863, -2.64],
         ...
@@ -48,8 +64,49 @@
         <p>If unsuccessful, the service returns the error:</p>
         <pre>
 {
-    success: false,
-    error: 'Oops! Something went wrong.'
+    "success": false,
+    "error": 'Oops! Something went wrong.'
 }</pre>
+        <h2>Test</h2>
+        <p>Send a post request to <b id="url"></b>.</p>
+        <textarea id="request-text">
+{
+    "database": "surechembl",
+    "fingerprint": "mqn",
+    "dimensions": 3,
+    "data": [
+        [2,2,4,5,3,0,0,0,2,0,0,0,0,19,14,0,0,0,0,0,0,1,1,0,3,5,2,1,1,6,4,0,2,0,0,6,5,0,8,1,0,1],
+        [0,0,3,4,11,0,0,0,1,0,0,0,0,22,16,1,0,0,0,0,0,0,1,0,4,5,7,4,0,5,1,0,0,0,0,3,3,0,15,1,0,0]
+    ]
+}</textarea>
+        <button id="send-request">Send</button>
+        <pre id="response-text"></pre>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var btn = document.getElementById('send-request');
+                var txt = document.getElementById('request-text');
+                var rsp = document.getElementById('response-text');
+                
+                document.getElementById('url').innerHTML = window.location.href;
+
+                btn.addEventListener('click', function(e) {
+                    var xhr = new XMLHttpRequest();
+                    var url = window.location.href;
+
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader("Content-type", "application/json");
+                    xhr.onreadystatechange = function () { 
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            var json = JSON.parse(xhr.responseText);
+                            rsp.innerHTML = xhr.responseText;
+                            rsp.style.display = 'block';
+                        }
+                    }
+
+                    xhr.send(txt.value); 
+                });
+            });
+        </script>
     </body>
 </html>

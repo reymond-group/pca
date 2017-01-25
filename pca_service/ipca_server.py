@@ -20,6 +20,10 @@ if len(sys.argv) < 2:
     print('Usage: ' + sys.argv[0] + ' /directory/to/models/')
     sys.exit()
 
+port = 8081
+if len(sys.argv) > 2:
+    port = int(sys.argv[2])
+
 model_dir = sys.argv[1]
 
 if not model_dir.endswith('/'):
@@ -51,17 +55,24 @@ def ipca():
 
     pca = joblib.load(path + file)
 
+    transformed_data = None
+
+    try:
+        transformed_data = pca.transform(data).tolist()
+    except:
+        return flask.jsonify({'success': False, 'error': 'Could not transform data. Do the fingerprints match the selected model?'})
+
     return flask.jsonify({
         'success': True,
         'database': database,
         'fingerprint': fingerprint,
         'dimensions': dimensions,
-        'data': pca.transform(data).tolist()
+        'data': transformed_data
     })
     
 # Run the app
 if __name__ == '__main__':
     app.run(
         host = '0.0.0.0',
-        port = '8081'
+        port = port
     )
