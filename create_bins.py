@@ -22,9 +22,9 @@ PARSER.add_argument('dimensions', metavar='DIMENSION', type=int, nargs='*', defa
                     help='the fields specifying the dimensions used to bin the data, ' +
                     'the default value is 0 1 2')
 
-PARSER.add_argument('bins', metavar='BINS', type=int, nargs='*', default=[250, 250, 250],
+PARSER.add_argument('-b', '--bins', type=int, default=250,
                     help='the fields specifying the number of bins used to bin the data, ' +
-                    'the default value is 1000 1000 1000')
+                    'the default value is 250')
 
 PARSER.add_argument('-d', '--delimiter', type=str, default=',',
                     help='use DELIMITER instead of \',\' for field delimiter')
@@ -43,8 +43,6 @@ PARSER.add_argument('-pf', '--propertiesfunc', choices=['mean', 'median'], defau
                     help='the function used to caluclate the properties of each bin')
 
 ARGS = PARSER.parse_args()
-
-ARGS.output = os.path.splitext(ARGS.output)[0]
 
 def load_properties(filename, lines):
     properties = ''
@@ -75,7 +73,7 @@ with open(ARGS.output + '.tmp', 'a+') as f:
     for chunk in READER:
         indices = pd.DataFrame()
         for i in range(len(ARGS.dimensions)):
-            bins = np.linspace(min_values[i], max_values[i], ARGS.bins[i])
+            bins = np.linspace(min_values[i], max_values[i], ARGS.bins)
             indices[i] = np.digitize(chunk[ARGS.dimensions[i]], bins)
         indices.to_csv(f, header=False, index=False)
 

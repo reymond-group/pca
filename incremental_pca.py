@@ -33,8 +33,6 @@ PARSER.add_argument('-c', '--chunksize', type=int, default=50000,
 
 ARGS = PARSER.parse_args()
 
-ARGS.output = os.path.splitext(ARGS.output)[0]
-
 READER = pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None, error_bad_lines=False)
 PCA = IncrementalPCA(n_components=ARGS.dimensions)
 
@@ -47,7 +45,7 @@ else:
     for chunk in READER:    
         PCA.partial_fit(chunk)
         total_read += ARGS.chunksize
-        print(str(total_read) + ' vectors read ...\n')
+        #print(str(total_read) + ' vectors read ...\n')
     if ARGS.model:
         if not ARGS.model.endswith('.pkl'):
             ARGS.model += '.pkl'
@@ -56,9 +54,9 @@ else:
 np.savetxt(ARGS.output + '-means.csv', PCA.mean_, delimiter=',')
 np.savetxt(ARGS.output + '-vars.csv', PCA.var_, delimiter=',')
 
-with open(ARGS.output + '.' + str(ARGS.dimensions) + '.pca.xyz', 'a+') as f:
+with open(ARGS.output, 'a+') as f:
     for chunk in pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None, error_bad_lines=False):
         transformed_chunk = PCA.transform(chunk)
         pd.DataFrame(transformed_chunk).to_csv(f, header=None, index=False)
         total_written += ARGS.chunksize
-        print(str(total_written) + ' vectors written ...\n')
+        #print(str(total_written) + ' vectors written ...\n')

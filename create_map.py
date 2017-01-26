@@ -41,8 +41,8 @@ ARGS = PARSER.parse_args()
 
 ARGS.output = os.path.splitext(ARGS.output)[0]
 
-MEANS = pd.read_csv(ARGS.means, sep=ARGS.delimiter, usecols=[ARGS.index], header=None)
-STDS = pd.read_csv(ARGS.stds, sep=ARGS.delimiter, usecols=[ARGS.index], header=None)
+MEANS = pd.read_csv(ARGS.means, sep=ARGS.delimiter, usecols=[ARGS.index - 1], header=None)
+STDS = pd.read_csv(ARGS.stds, sep=ARGS.delimiter, usecols=[ARGS.index - 1], header=None)
 STDS = STDS.fillna(0)
 STDS = STDS.rename(columns = {0:1})
 
