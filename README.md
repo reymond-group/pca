@@ -65,6 +65,6 @@ python3 index_file.py output.fingerprint.xyz
 ### Creating map files
 Map files are created one by one using
 ```
-python3 create_map.py output.means output.stds hac.map -i 0
+python3 create_map.py output.means output.stds hac.map -i 1 
 ```
-where `-i` is the index of the property
+where `-i` is the index of the property starting from 1
