@@ -15,6 +15,10 @@ app.config.update(
     PROPAGATE_EXCEPTIONS='DEBUG'
 )
 
+def scale(x, minimum, maximum, a, b) {
+    return (((b - a) * (x - minimum)) / (maximum - minimum)) + a
+}
+
 if len(sys.argv) < 2:
     print('Please provide a directory containing the models.')
     print('Usage: ' + sys.argv[0] + ' /directory/to/models/')
@@ -47,13 +51,18 @@ def ipca():
     dimensions = json['dimensions']
     data = json['data']
 
-    file = database + '.' + fingerprint + '.' + str(dimensions) + '.pkl'
+    model_file = database + '.' + fingerprint + '.' + str(dimensions) + '.pkl'
+    min_max_file = database + '.' + fingerprint + '.' + str(dimensions) + '.minmax'
     path = model_dir + database + '/' + fingerprint + '/' + str(dimensions) + '/'
     
-    if not os.path.isfile(path + file):
+    if not os.path.isfile(path + model_file):
         return flask.jsonify({'success': False, 'error': 'Transformation not available.'})
+    if not os.path.isfile(path + min_max_file):
+        return flask.jsonify({'success': False, 'error': 'Min-Max file not found.'})
 
-    pca = joblib.load(path + file)
+    pca = joblib.load(path + model_file)
+    
+    min_max = pd.read_csv(path + min_max_file, header=None)
 
     transformed_data = None
 
@@ -61,6 +70,9 @@ def ipca():
         transformed_data = pca.transform(data).tolist()
     except:
         return flask.jsonify({'success': False, 'error': 'Could not transform data. Do the fingerprints match the selected model?'})
+
+    # Scale the data
+    
 
     return flask.jsonify({
         'success': True,

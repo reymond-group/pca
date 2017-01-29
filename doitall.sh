@@ -11,14 +11,14 @@ IDS_FILE="$OUTPUT_DIR$DATABASE_NAME.ids"
 SMILES_FILE="$OUTPUT_DIR$DATABASE_NAME.smiles"
 FP_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.fp"
 PROP_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.prop"
-MODEL_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.3.pkl"
 COORD_FILE="$DATABASE_NAME.$FINGERPRINT_NAME.xyz"
-BIN_FILES="$DATABASE_NAME.$FINGERPRINT_NAME.$BINS"
+INFO_FILE="$DATABASE_NAME.$FINGERPRINT_NAME.info"
 
-IDS_INDEX_FILE="$IDS_FILE.index"
+BIN_FILES="$DATABASE_NAME.$FINGERPRINT_NAME.$BINS"
+MODEL_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.3.pkl"
+
 SMILES_INDEX_FILE="$SMILES_FILE.index"
-COORDS_INDEX_FILE="$COORD_FILE.index"
-FPS_INDEX_FILE="$FP_FILE.index"
+INFO_INDEX_FILE="$INFO_FILE.index"
 
 echo "Writing output files to $OUTPUT_DIR."
 
@@ -69,24 +69,14 @@ do
     fi
 done
 
-# Indexing Files
-if [ ! -f "$IDS_INDEX_FILE" ]; then
-    echo "Indexing $IDS_FILE ..."
-    python3 "$SCRIPT_DIR/index_file.py" "$IDS_FILE"
+# Joining the coordinates and the smi files
+if [ ! -f "$INFO_FILE" ]; then
+    echo "Creating info file ..."
+    paste -d' ' "$IDS_FILE" "$SMILES_FILE" "$FP_FILE" "$COORD_FILE" > "$INFO_FILE"
 fi
 
-if [ ! -f "$SMILES_INDEX_FILE" ]; then
-    echo "Indexing $SMILES_FILE ..."
-    python3 "$SCRIPT_DIR/index_file.py" "$SMILES_FILE"
-fi
-
-if [ ! -f "$COORDS_INDEX_FILE" ]; then
-    echo "Indexing $COORD_FILE ..."
-    python3 "$SCRIPT_DIR/index_file.py" "$COORD_FILE"
-fi
-
-if [ ! -f "$FPS_INDEX_FILE" ]; then
-    echo "Indexing $FP_FILE ..."
-    python3 "$SCRIPT_DIR/index_file.py" "$FP_FILE"
+if [ ! -f "$INFO_INDEX_FILE" ]; then
+    echo "Indexing info file ..."
+    python3 "$SCRIPT_DIR/index_file.py" "$INFO_FILE"
 fi
 
