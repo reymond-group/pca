@@ -15,9 +15,8 @@ app.config.update(
     PROPAGATE_EXCEPTIONS='DEBUG'
 )
 
-def scale(x, minimum, maximum, a, b) {
+def scale(x, minimum, maximum, a, b) :
     return (((b - a) * (x - minimum)) / (maximum - minimum)) + a
-}
 
 if len(sys.argv) < 2:
     print('Please provide a directory containing the models.')
@@ -40,6 +39,7 @@ def form():
 
 # The POST request doing the incremental pca
 @app.route('/', methods=['POST'])
+@crossdomain(origin='*')
 def ipca():
     json = flask.request.get_json(silent=True)
 
@@ -50,6 +50,8 @@ def ipca():
     fingerprint = json['fingerprint']
     dimensions = json['dimensions']
     data = json['data']
+    binning = json['binning']
+    resolution = json['resolution']
 
     model_file = database + '.' + fingerprint + '.' + str(dimensions) + '.pkl'
     min_max_file = database + '.' + fingerprint + '.' + str(dimensions) + '.minmax'
@@ -57,17 +59,22 @@ def ipca():
     
     if not os.path.isfile(path + model_file):
         return flask.jsonify({'success': False, 'error': 'Transformation not available.'})
-    if not os.path.isfile(path + min_max_file):
-        return flask.jsonify({'success': False, 'error': 'Min-Max file not found.'})
+    if binning and not os.path.isfile(path + min_max_file):
+        return flask.jsonify({'success': False, 'error': 'Min-Max file not found. Provide the file or run without binning.'})
 
     pca = joblib.load(path + model_file)
-    
-    min_max = pd.read_csv(path + min_max_file, header=None)
 
     transformed_data = None
 
     try:
         transformed_data = pca.transform(data).tolist()
+        if binning: 
+            min_max = pd.read_csv(path + min_max_file, header=None)
+            for i, v in enumerate(transformed_data):
+                for j, c in enumerate(v):
+                    transformed_data[i][j] = int(scale(c, min_max[0][j], min_max[1][j], 0, resolution))
+
+
     except:
         return flask.jsonify({'success': False, 'error': 'Could not transform data. Do the fingerprints match the selected model?'})
 
@@ -79,6 +86,8 @@ def ipca():
         'database': database,
         'fingerprint': fingerprint,
         'dimensions': dimensions,
+        'binning': binning,
+        'resolution': resolution,
         'data': transformed_data
     })
     
