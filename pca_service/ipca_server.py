@@ -5,11 +5,14 @@ import pandas as pd
 import numpy as np
 import flask
 
+from flask_cors import CORS, cross_origin
+
 from sklearn.decomposition import IncrementalPCA
 from sklearn.externals import joblib
 
 # Initialize the Flask application
 app = flask.Flask(__name__)
+CORS(app)
 
 app.config.update(
     PROPAGATE_EXCEPTIONS='DEBUG'
@@ -39,7 +42,6 @@ def form():
 
 # The POST request doing the incremental pca
 @app.route('/', methods=['POST'])
-@crossdomain(origin='*')
 def ipca():
     json = flask.request.get_json(silent=True)
 
