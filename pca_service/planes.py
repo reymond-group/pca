@@ -4,6 +4,7 @@ import argparse
 import pandas as pd
 import numpy as np
 import flask
+import scipy
 
 from flask_cors import CORS, cross_origin
 
@@ -26,7 +27,7 @@ if len(sys.argv) < 2:
     print('Usage: ' + sys.argv[0] + ' /directory/to/models/')
     sys.exit()
 
-port = 8081
+port = 8080
 if len(sys.argv) > 2:
     port = int(sys.argv[2])
 
