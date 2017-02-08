@@ -1,3 +1,4 @@
+![PCPBIM](https://github.com/reymond-group/pca/blob/master/logo.png?raw=true)
 # The PCPBIM (Preparation - Cleanup - PCA - Binning - Info - Mapping) Toolchain
 
 ### File Integrity Check
