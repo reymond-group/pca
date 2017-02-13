@@ -30,7 +30,7 @@ def is_number(s):
 def run():
     """ Do the actual checking """
     i = 0
-    with open(ARGS.input, 'r') as in_file:
+    with open(ARGS.input, 'r', errors='replace') as in_file:
         for line in in_file:
             i += 1
 
