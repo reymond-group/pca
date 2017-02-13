@@ -12,10 +12,12 @@ cat smifile* > output.smi
 ### Preparation
 If the files do not contain matching compounds (some might fail during fingerprint calculation), the differing files have to be removed in order to guarantee that the ids and smiles indices point to the correct value for each fingerprint. This is due to the fact, that smiles and ids are used per database and not per fingerprint (resulting in less memory usage).
 
+<!--
 Decouple the ID from the smiles string by replacing the first occurance of `;` with a space:
 ```
 sed -i 's/;/ /' output.smi
 ```
+-->
 If there are trailing semicolons, remove the last character from each line 
 ```
 sed -i 's/.$//' <file>
