@@ -7,8 +7,9 @@ BINS=$4
 OUTPUT_DIR=$(readlink -f "$INPUT_FILE")
 OUTPUT_DIR="${OUTPUT_DIR%/*}/"
 
-IDS_FILE="$OUTPUT_DIR$DATABASE_NAME.ids"
-SMILES_FILE="$OUTPUT_DIR$DATABASE_NAME.smiles"
+TMP_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.tmp"
+IDS_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.ids"
+SMILES_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.smiles"
 FP_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.fp"
 PROP_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.prop"
 COORD_FILE="$DATABASE_NAME.$FINGERPRINT_NAME.xyz"
@@ -22,15 +23,21 @@ INFO_INDEX_FILE="$INFO_FILE.index"
 
 echo "Writing output files to $OUTPUT_DIR."
 
-# IDs and smiles files are written only once per database
-if [ ! -f $IDS_FILE ]; then
-    echo "Writing $IDS_FILE ..."
-    cut -f1 -d' ' "$INPUT_FILE" > "$IDS_FILE"
-fi
+# Write ids and smiles file per fingerprint
+# if [ ! -f $TMP_FILE ]; then
+    # echo "Writing $TMP_FILE ..."
+    # cut -f1 -d' ' "$INPUT_FILE" > "$TMP_FILE"
+# fi
 
 if [ ! -f $SMILES_FILE ]; then
     echo "Writing $SMILES_FILE ..."
-    cut -f2 -d' ' "$INPUT_FILE" > "$SMILES_FILE"
+    cut -f1 -d';' "$INPUT_FILE" > "$SMILES_FILE"
+fi
+
+
+if [ ! -f $IDS_FILE ]; then
+    echo "Writing $IDS_FILE ..."
+    cut -f2 -d';' "$INPUT_FILE" > "$IDS_FILE"
 fi
 
 # Write fingerprints and properties per fingerprint
