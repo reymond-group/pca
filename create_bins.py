@@ -48,6 +48,7 @@ def load_properties(filename, lines):
     properties = ''
     for line in lines:
         properties += linecache.getline(filename, line + 1)
+
     return properties
 
 def sort_indices(filename, lines):
@@ -77,6 +78,8 @@ def sort_indices(filename, lines):
     
     for i in range(0, len(lines)):
         dists.append(pow(c_x - x[i]) + pow(c_y - y[i]) + pow(c_z - z[i]))
+
+    return [x for (y,x) in sorted(zip(dists,lines), key=lambda pair: pair[0])] 
 
 READER = pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None)
 
@@ -158,6 +161,9 @@ else:
                         k.write(values[:-1] + '\n')
 
                         values = ''
+
+                        value = sortIndices(ARGS.input, value)
+
                         for item in value:
                             values += str(item) + ','
                         g.write(values[:-1] + '\n')
