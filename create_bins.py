@@ -50,6 +50,34 @@ def load_properties(filename, lines):
         properties += linecache.getline(filename, line + 1)
     return properties
 
+def sort_indices(filename, lines):
+    c_x = 0
+    c_y = 0
+    c_z = 0
+    
+    x = []
+    y = []
+    z = []
+
+    dists = []
+
+    for line in lines:
+        coords = linecache.getline(filename, line + 1).split(ARGS.delimiter)
+        x.append(coords[0])
+        y.append(coords[1])
+        z.append(coords[2])
+        
+        c_x += coords[0]
+        c_y += coords[1]
+        c_z += coords[2]
+
+    c_x = c_x / len(lines)
+    c_y = c_y / len(lines)
+    c_z = c_z / len(lines)
+    
+    for i in range(0, len(lines)):
+        dists.append(pow(c_x - x[i]) + pow(c_y - y[i]) + pow(c_z - z[i]))
+
 READER = pd.read_csv(ARGS.input, sep=ARGS.delimiter, chunksize=ARGS.chunksize, header=None)
 
 max_values = [-99999999] * len(ARGS.dimensions)
