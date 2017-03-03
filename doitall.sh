@@ -31,13 +31,13 @@ echo "Writing output files to $OUTPUT_DIR."
 
 if [ ! -f $SMILES_FILE ]; then
     echo "Writing $SMILES_FILE ..."
-    cut -f1 -d';' "$INPUT_FILE" > "$SMILES_FILE"
+    cut -f1 -d' ' "$INPUT_FILE" > "$SMILES_FILE"
 fi
 
 
 if [ ! -f $IDS_FILE ]; then
     echo "Writing $IDS_FILE ..."
-    cut -f2 -d';' "$INPUT_FILE" > "$IDS_FILE"
+    cut -f2 -d' ' "$INPUT_FILE" > "$IDS_FILE"
 fi
 
 # Write fingerprints and properties per fingerprint

@@ -52,9 +52,9 @@ def load_properties(filename, lines):
     return properties
 
 def sort_indices(filename, lines):
-    c_x = 0
-    c_y = 0
-    c_z = 0
+    c_x = 0.0
+    c_y = 0.0
+    c_z = 0.0
     
     x = []
     y = []
@@ -64,20 +64,24 @@ def sort_indices(filename, lines):
 
     for line in lines:
         coords = linecache.getline(filename, line + 1).split(ARGS.delimiter)
-        x.append(coords[0])
-        y.append(coords[1])
-        z.append(coords[2])
+        f_x = float(coords[0])
+        f_y = float(coords[1])
+        f_z = float(coords[2])
+
+        x.append(f_x)
+        y.append(f_y)
+        z.append(f_z)
         
-        c_x += coords[0]
-        c_y += coords[1]
-        c_z += coords[2]
+        c_x += f_x
+        c_y += f_y
+        c_z += f_z
 
     c_x = c_x / len(lines)
     c_y = c_y / len(lines)
     c_z = c_z / len(lines)
     
     for i in range(0, len(lines)):
-        dists.append(pow(c_x - x[i]) + pow(c_y - y[i]) + pow(c_z - z[i]))
+        dists.append(pow(c_x - x[i], 2.0) + pow(c_y - y[i], 2.0) + pow(c_z - z[i], 2.0))
 
     return [x for (y,x) in sorted(zip(dists,lines), key=lambda pair: pair[0])] 
 
@@ -162,7 +166,7 @@ else:
 
                         values = ''
 
-                        value = sortIndices(ARGS.input, value)
+                        value = sort_indices(ARGS.input, value)
 
                         for item in value:
                             values += str(item) + ','

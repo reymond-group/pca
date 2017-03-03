@@ -87,5 +87,5 @@ def run():
                 continue
 
             if ARGS.fix:
-                print(line)
+                print(line, end='')
 run()
