@@ -13,6 +13,7 @@ from sklearn import preprocessing
 from io import StringIO
 from colour import Color
 
+
 PARSER = argparse.ArgumentParser(
     description='Create RGB color maps from bins.')
 
@@ -31,11 +32,8 @@ PARSER.add_argument('-d', '--delimiter', type=str, default=',',
 PARSER.add_argument('-i', '--index', type=int, required=True,
                     help='the index for the column to be exported as an RGB color map')
 
-PARSER.add_argument('--min', nargs='?', const=0.0, type=float,
-                    help='the min value')
-
-PARSER.add_argument('--max', nargs='?', const=1.0, type=float,
-                    help='the max value')
+PARSER.add_argument('-q', '--quantile', type=float, default=0.25,
+                    help='use QUANTILE instead of \'0.25\' to determine the min and max')
 
 ARGS = PARSER.parse_args()
 
@@ -46,11 +44,23 @@ STDS = pd.read_csv(ARGS.stds, sep=ARGS.delimiter, usecols=[ARGS.index - 1], head
 STDS = STDS.fillna(0)
 STDS = STDS.rename(columns = {0:1})
 
-if ARGS.min is not None:
-    MEANS[MEANS < ARGS.min] = ARGS.min
+Q1 = MEANS.quantile(ARGS.quantile)
+Q3 = MEANS.quantile(1.0 - ARGS.quantile)
+IQR = Q3 - Q1
+MIN = Q1 - 1.5 * IQR
+MAX = Q3 + 1.5 * IQR
 
-if ARGS.max is not None:
-    MEANS[MEANS > ARGS.max] = ARGS.max
+MEANS[MEANS < MIN] = MIN
+MEANS[MEANS > MAX] = MAX
+
+Q1_S = STDS.quantile(ARGS.quantile)
+Q3_S = STDS.quantile(1.0 - ARGS.quantile)
+IQR_S = Q3_S - Q1_S
+MIN_S = Q1_S - 1.5 * IQR_S
+MAX_S = Q3_S + 1.5 * IQR_S
+
+STDS[STDS < MIN_S] = MIN_S
+STDS[STDS > MAX_S] = MAX_S
 
 MEANS = MEANS.apply(lambda x: (0.85 * (x - np.min(x)) / (np.max(x) - np.min(x))) + 0.66).values
 STDS = STDS.apply(lambda x: 1 - (0.5 * (x - np.min(x))) / (np.max(x) - np.min(x))).values
