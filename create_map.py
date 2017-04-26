@@ -44,8 +44,8 @@ STDS = pd.read_csv(ARGS.stds, sep=ARGS.delimiter, usecols=[ARGS.index - 1], head
 STDS = STDS.fillna(0)
 STDS = STDS.rename(columns = {0:1})
 
-Q1 = MEANS.quantile(ARGS.quantile)
-Q3 = MEANS.quantile(1.0 - ARGS.quantile)
+Q1 = MEANS.quantile(ARGS.quantile).values[0]
+Q3 = MEANS.quantile(1.0 - ARGS.quantile).values[0]
 IQR = Q3 - Q1
 MIN = Q1 - 1.5 * IQR
 MAX = Q3 + 1.5 * IQR
@@ -53,8 +53,8 @@ MAX = Q3 + 1.5 * IQR
 MEANS[MEANS < MIN] = MIN
 MEANS[MEANS > MAX] = MAX
 
-Q1_S = STDS.quantile(ARGS.quantile)
-Q3_S = STDS.quantile(1.0 - ARGS.quantile)
+Q1_S = STDS.quantile(ARGS.quantile).values[0]
+Q3_S = STDS.quantile(1.0 - ARGS.quantile).values[0]
 IQR_S = Q3_S - Q1_S
 MIN_S = Q1_S - 1.5 * IQR_S
 MAX_S = Q3_S + 1.5 * IQR_S
