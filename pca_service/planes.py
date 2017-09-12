@@ -27,7 +27,7 @@ if len(sys.argv) < 2:
     print('Usage: ' + sys.argv[0] + ' /directory/to/models/')
     sys.exit()
 
-port = 8080
+port = 80
 if len(sys.argv) > 2:
     port = int(sys.argv[2])
 
