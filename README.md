@@ -1,78 +1,35 @@
 ![PCPBIM](https://github.com/reymond-group/pca/blob/master/logo.png?raw=true)
 # The PCPBIM (Preparation - Cleanup - PCA - Binning - Info - Mapping) Toolchain
+This collection of utility scripts creates files which can be served by the [Underdark Go](https://github.com/reymond-group/underdarkgo) web service which is part of the FUn Framework.
+## Dependencies
+- Python 3
+    - numpy
+    - pandas
+    - scipy
+    - sklearn
+## Getting Started
+It is important to have all input files in a correct file format which is a plain-text file containing information on one molecule per line, structured as follows
+```
+c1ccccc1 Benzene 1;0;0;1;0;1;1;1;1;1;0 1.25;6
+C1CCCC1 Cyclopentan 1;0;0;1;1;1;1;1;1;0;1 0.75;5
+```
+Where each line contains the SMILES, an arbitrary label, a fingerprint vector, and any number of numerical properties for which the colour maps will be generated. The default delimiters are `whitespace` and `;`, both can be changed by modifying the script `doitall.sh`.
 
-### File Integrity Check
-The file can be checked on whether or not it is an ASCII file using the `checkascii.sh` script. Checks on the readability of the file can be run using the `check_file.py` script.
+To generate the files for Underdark Go, make sure the files are in the correct format and all dependencies are met and clone this repository
+```bash
+git clone https://github.com/reymond-group/pca.git
+```
+Next, make sure the bash script is executable
+```bash
+chmod +x doitall.sh
+```
+Finally, run the bash script which will in turn run the necessary python scripts
+```bash
+./doitall.sh inputFile databaseName fingerprintName n
+```
+where `inputFile` is a plain-text file formatted according to the information provided above, `databaseName` and `fingerprintName` are arbitrary names chosen for the database and the fingerprint respectively. `n` is an integer setting the resolution of the final cubic map. It is good practice to provide low (n <= 250) and high (n >= 500) resolution versions of each map. While most maps are probably sparse and do not approach the maximum number of rendered bins n<sup>3</sup>, these numbers might have to be lowered for densly populated maps.
 
-### Joining .smi files (if there are multiple)
+Example
+```bash
+./doitall.sh my-awesome-data.txt ACMEbase Xfp 250
 ```
-cat smifile* > output.smi
-```
-
-### Preparation
-If the files do not contain matching compounds (some might fail during fingerprint calculation), the differing files have to be removed in order to guarantee that the ids and smiles indices point to the correct value for each fingerprint. This is due to the fact, that smiles and ids are used per database and not per fingerprint (resulting in less memory usage).
-
-Before running `doitall.sh`, make sure, that each field (including smiles and id) is separated by a whitespace character, the semicolon between the smiles and id fields can be replaced by this command:
-```
-sed -i 's/;/ /' output.smi
-```
-
-<!--
-Decouple the ID from the smiles string by replacing the first occurance of `;` with a space:
-```
-sed -i 's/;/ /' output.smi
-```
--->
-If there are trailing semicolons, remove the last character from each line 
-```
-sed -i 's/.$//' <file>
-```
-First, sort the smi files by the ID:
-```
-sort --field-separator=' ' --key=2,2 --ignore-nonprinting output.smi -o output.smi
-```
-Then extract the ids from the .smi files:
-```
-cut -f2 -d' ' output.smi > output.ids
-```
-Finally, use the `comm` command to extract the shared lines among the files a, b, c, d by:
-```
-comm -12 a.ids b.ids | comm -12 - c.ids | comm -12 - d.ids > common.ids
-```
-Now join tile different `.smi` files on the file `common.ids`:
-```
-join -1 2 -2 2 common.ids output.smi -t $' ' > output.smi.fixed
-```
-
-### Cut the main file
-```
-cut -f1 -d' ' output.fixed.smi > output.ids
-cut -f2 -d' ' output.fixed.smi > output.smiles
-cut -f3 -d' ' output.fixed.smi > output.fp
-cut -f4 -d' ' output.fixed.smi > output.prop
-```
-
-### PCA
-Required packages: `scipy`, `numpy`, `pandas`, `colour` and `sklearn`
-```
-python3 incremental_pca.py output.fp output.fingerprint.xyz -d ';'
-```
-
-### Create the bins
-```
-python3 create_bins.py output.csv output.xyz -p output.prop -pd ';' -b 250
-```
-
-### Index files
-Create indices for the different files:
-```
-python3 index_file.py output.ids
-python3 index_file.py output.smiles
-python3 index_file.py output.fingerprint.xyz
-```
-### Creating map files
-Map files are created one by one using
-```
-python3 create_map.py output.means output.stds hac.map -i 1 
-```
-where `-i` is the index of the property starting from 1
