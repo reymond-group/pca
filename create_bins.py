@@ -151,9 +151,10 @@ else:
                             means = props.mean(axis=0)
                         elif ARGS.propertiesfunc == 'median':
                             means = props.medium(axis=0)
-
+                        
                         stds = props.std(axis=0)
-
+                        stds.fillna(0.0, inplace=True)
+                        
                         values = ''
                         for p in means:
                             values += str(p) + ','

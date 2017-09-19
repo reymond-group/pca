@@ -59,6 +59,8 @@ IQR_S = Q3_S - Q1_S
 MIN_S = Q1_S - 1.5 * IQR_S
 MAX_S = Q3_S + 1.5 * IQR_S
 
+if MAX_S == 0: MAX_S = 0.001
+
 STDS[STDS < MIN_S] = MIN_S
 STDS[STDS > MAX_S] = MAX_S
 
@@ -66,7 +68,6 @@ MEANS = MEANS.apply(lambda x: (0.85 * (x - np.min(x)) / (np.max(x) - np.min(x)))
 STDS = STDS.apply(lambda x: 1 - (0.5 * (x - np.min(x))) / (np.max(x) - np.min(x))).values
 
 #DATA = pd.concat([DATA, STDS], axis=1)
-
 with open(ARGS.output + '.map', 'a+') as f:
     for i, row in enumerate(MEANS):
         if row[0] > 1.0: row[0] = row[0] - 1.0
