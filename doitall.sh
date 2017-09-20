@@ -79,7 +79,7 @@ done
 # Joining the coordinates and the smi files
 if [ ! -f "$INFO_FILE" ]; then
     echo "Creating info file ..."
-    paste -d' ' "$IDS_FILE" "$SMILES_FILE" "$FP_FILE" "$COORD_FILE" > "$INFO_FILE"
+    paste -d' ' "$IDS_FILE" "$SMILES_FILE" "$COORD_FILE" "$FP_FILE" > "$INFO_FILE"
 fi
 
 if [ ! -f "$INFO_INDEX_FILE" ]; then
