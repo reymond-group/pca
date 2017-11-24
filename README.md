@@ -1,6 +1,6 @@
 ![PCPBIM](https://github.com/reymond-group/pca/blob/master/logo.png?raw=true)
 
-If you use this code or application, please cite the original paper published by Bioinformatics: ![10.1093/bioinformatics/btx760](http://dx.doi.org/10.1093/bioinformatics/btx760)
+If you use this code or application, please cite the original paper published by Bioinformatics: [10.1093/bioinformatics/btx760](http://dx.doi.org/10.1093/bioinformatics/btx760)
 
 # The PCPBIM (Preparation - Cleanup - PCA - Binning - Info - Mapping) Toolchain
 This collection of utility scripts creates files which can be served by the [Underdark Go](https://github.com/reymond-group/underdarkgo) web service which is part of the FUn Framework.
