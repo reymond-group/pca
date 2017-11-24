@@ -1,6 +1,9 @@
 ![PCPBIM](https://github.com/reymond-group/pca/blob/master/logo.png?raw=true)
 # The PCPBIM (Preparation - Cleanup - PCA - Binning - Info - Mapping) Toolchain
 This collection of utility scripts creates files which can be served by the [Underdark Go](https://github.com/reymond-group/underdarkgo) web service which is part of the FUn Framework.
+
+**For a complete overview and detailed installation instructions for this project, please visit the [project website](http://doc.gdb.tools/fun).**
+
 ## Dependencies
 - Python 3
     - numpy
