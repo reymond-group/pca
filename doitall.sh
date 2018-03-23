@@ -4,6 +4,7 @@ INPUT_FILE=$1
 DATABASE_NAME=$2
 FINGERPRINT_NAME=$3
 BINS=$4
+METHOD=$5
 OUTPUT_DIR=$(readlink -f "$INPUT_FILE")
 OUTPUT_DIR="${OUTPUT_DIR%/*}/"
 
@@ -53,8 +54,13 @@ fi
 
 # Incremental PCA
 if [ ! -f $COORD_FILE ]; then
-    echo "Running incremental pca on $FP_FILE ..."
-    python3 "$SCRIPT_DIR/incremental_pca.py" "$FP_FILE" "$COORD_FILE" -d ";" -m "$MODEL_FILE"
+    if [ "$METHOD" == "autoencoder" ]; then
+        echo "Running autoencoder on $FP_FILE ..."
+        python3 "$SCRIPT_DIR/autoencoder.py" "$FP_FILE" "$COORD_FILE" -d ";"
+    else
+        echo "Running incremental pca on $FP_FILE ..."
+        python3 "$SCRIPT_DIR/incremental_pca.py" "$FP_FILE" "$COORD_FILE" -d ";" -m "$MODEL_FILE"
+    fi
 fi
 
 # Binning
