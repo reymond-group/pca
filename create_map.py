@@ -77,5 +77,5 @@ with open(ARGS.output + '.map', 'a+') as f:
         if row[0] > 1.0: row[0] = row[0] - 1.0
         row[0] = (1 - row[0]) + 0.33
         if row[0] > 1.0: row[0] = row[0] - 1.0
-        c = Color(hue=max(min(row[0], 0.0), 1.0), saturation=max(min(STDS[i][0], 0.0), 1.0), luminance=0.5)
+        c = Color(hue=min(max(row[0], 0.0), 1.0), saturation=min(max(STDS[i][0], 0.0), 1.0), luminance=0.5)
         f.write(str(round(c.red, 2)) + ',' + str(round(c.green, 2)) + ',' + str(round(c.blue, 2)) + '\n')
