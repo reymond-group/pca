@@ -5,6 +5,7 @@ import collections
 import linecache
 import argparse
 import colorsys
+import math
 import pandas as pd
 import numpy as np
 
@@ -70,6 +71,9 @@ STDS = STDS.apply(lambda x: 1 - (0.5 * (x - np.min(x))) / (np.max(x) - np.min(x)
 #DATA = pd.concat([DATA, STDS], axis=1)
 with open(ARGS.output + '.map', 'a+') as f:
     for i, row in enumerate(MEANS):
+        if math.isnan(STDS[i][0]) or STDS[i][0] == 0 or math.isinf(STDS[i][0]):
+            STDS[i][0] = 0.99
+        
         if row[0] > 1.0: row[0] = row[0] - 1.0
         row[0] = (1 - row[0]) + 0.33
         if row[0] > 1.0: row[0] = row[0] - 1.0
