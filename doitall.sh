@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 SCRIPT_DIR="${BASH_SOURCE%/*}/"
-INPUT_FILE=$1
+INPUT_FILE="$1"
 DATABASE_NAME=$2
 FINGERPRINT_NAME=$3
 BINS=$4
@@ -30,30 +30,30 @@ echo "Writing output files to $OUTPUT_DIR."
     # cut -f1 -d' ' "$INPUT_FILE" > "$TMP_FILE"
 # fi
 
-if [ ! -f $SMILES_FILE ]; then
+if [ ! -f "$SMILES_FILE" ]; then
     echo "Writing $SMILES_FILE ..."
     cut -f1 -d' ' "$INPUT_FILE" > "$SMILES_FILE"
 fi
 
 
-if [ ! -f $IDS_FILE ]; then
+if [ ! -f "$IDS_FILE" ]; then
     echo "Writing $IDS_FILE ..."
     cut -f2 -d' ' "$INPUT_FILE" > "$IDS_FILE"
 fi
 
 # Write fingerprints and properties per fingerprint
-if [ ! -f $FP_FILE ]; then
+if [ ! -f "$FP_FILE" ]; then
     echo "Writing $FP_FILE ..."
     cut -f3 -d' ' "$INPUT_FILE" > "$FP_FILE"
 fi
 
-if [ ! -f $PROP_FILE ]; then
+if [ ! -f "$PROP_FILE" ]; then
     echo "Writing $PROP_FILE ..."
     cut -f4 -d' ' "$INPUT_FILE" > "$PROP_FILE"
 fi
 
 # Incremental PCA
-if [ ! -f $COORD_FILE ]; then
+if [ ! -f "$COORD_FILE" ]; then
     if [ "$METHOD" == "autoencoder" ]; then
         echo "Running autoencoder on $FP_FILE ..."
         python3 "$SCRIPT_DIR/autoencoder.py" "$FP_FILE" "$COORD_FILE" -d ";"
@@ -69,14 +69,14 @@ if [ ! -f "$BIN_FILES.xyz" ]; then
     python3 "$SCRIPT_DIR/create_bins.py" "$COORD_FILE" "$BIN_FILES" -p "$PROP_FILE" -pd ";" -b $BINS
 fi
 
-N_PROP="$(awk -F';' '{print NF; exit}' $PROP_FILE)"
+N_PROP="$(awk -F';' '{print NF; exit}' "$PROP_FILE")"
 
 # Creating Maps
 for (( c=1; c<=$N_PROP; c++ ))
 do
     MAP_FILE="$OUTPUT_DIR$DATABASE_NAME.$FINGERPRINT_NAME.$BINS.$c.map"
 
-    if [ ! -f $MAP_FILE ]; then
+    if [ ! -f "$MAP_FILE" ]; then
         echo "Writing map file $c ..."
         python3 "$SCRIPT_DIR/create_map.py" "$BIN_FILES.means" "$BIN_FILES.stds" "$MAP_FILE" -i $c
     fi
