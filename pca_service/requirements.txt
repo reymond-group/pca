@@ -2,7 +2,7 @@
 # https://github.com/Damnever/pigar
 
 # planes.py: 6
-Flask == 0.10.1
+Flask == 1.0
 
 # planes.py: 9
 Flask_Cors == 3.0.2
