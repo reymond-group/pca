@@ -5,7 +5,7 @@
 Flask == 0.10.1
 
 # planes.py: 9
-Flask_Cors == 3.0.2
+Flask_Cors == 3.0.9
 
 # planes.py: 5
 numpy == 1.11.3
