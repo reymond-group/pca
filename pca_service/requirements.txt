@@ -8,7 +8,7 @@ Flask == 0.10.1
 Flask_Cors == 3.0.2
 
 # planes.py: 5
-numpy == 1.11.3
+numpy == 1.22.0
 
 # planes.py: 4
 pandas == 0.19.2
